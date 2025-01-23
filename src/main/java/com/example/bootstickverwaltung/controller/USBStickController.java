@@ -91,6 +91,7 @@ public class USBStickController {
 
         try {
             System.out.println("Benutzername: " + username); // Debugging
+            System.out.println("Passwort: " + password); // Debugging
 
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
@@ -129,19 +130,23 @@ public class USBStickController {
     }
 
     private Optional<String> determineUserRole(String username) {
-        Optional<UserEntry> userOpt = userService.findByCommonName(username, false); // false = Keine Gruppen laden
-
+        Optional<UserEntry> userOpt = userService.findByCommonName(username, false);
         if (userOpt.isPresent()) {
             UserEntry user = userOpt.get();
             String email = user.getMail();
 
-            // Nur Lehrer und Admins erlauben
-            if (email != null && !email.toLowerCase().contains("student")) {
-                return Optional.of("ROLE_TEACHER");
+            // Falls es 'student' enthält => Rolle STUDENT
+            // (und evtl. an anderer Stelle "Admins" checken)
+            if (email != null) {
+                if (email.toLowerCase().contains("student")) {
+                    return Optional.of("ROLE_STUDENT");
+                } else {
+                    return Optional.of("ROLE_TEACHER");
+                }
             }
         }
-
         return Optional.empty();
     }
+
 
 }

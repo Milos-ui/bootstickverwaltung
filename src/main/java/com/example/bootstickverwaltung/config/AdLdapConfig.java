@@ -1,5 +1,6 @@
 package com.example.bootstickverwaltung.config;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,4 +42,11 @@ public class AdLdapConfig {
             ActiveDirectoryLdapAuthenticationProvider adProvider) {
         return new ProviderManager(Collections.singletonList(adProvider));
     }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("DEBUG - spring.ldap.username=" + url); // Test, ob richtig geladen
+        System.out.println("DEBUG - AD_USER from environment=" + System.getenv("AD_USER"));
+    }
+
 }
