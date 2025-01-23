@@ -11,8 +11,7 @@ import jakarta.persistence.Table;
 public class USBStick {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String inventarnummer; // Primärschlüssel als Long
+    private String inventarnummer;
 
     private String typ;            // Bootstick oder Datenstick
     private String speicherkapazitaet; // Größe des Speichers
