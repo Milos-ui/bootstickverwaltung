@@ -47,6 +47,9 @@ public class AdLdapConfig {
     public void init() {
         System.out.println("DEBUG - spring.ldap.username=" + url); // Test, ob richtig geladen
         System.out.println("DEBUG - AD_USER from environment=" + System.getenv("AD_USER"));
+        System.out.println("LDAP URL: " + url);
+        System.out.println("LDAP Domain: " + domain);
+
     }
 
 }

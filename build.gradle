@@ -38,7 +38,7 @@ dependencies {
     implementation 'org.springframework.ldap:spring-ldap-odm:3.2.8'
 
     // spring-dotenv, falls du .env-Dateien verwendest
-    implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+    implementation 'me.paulschwarz:spring-dotenv:2.5.4'
 
     // OpenAPI/Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
