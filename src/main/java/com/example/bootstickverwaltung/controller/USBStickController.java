@@ -25,8 +25,8 @@ public class USBStickController {
     @Autowired
     private USBStickRepository repository;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    //@Autowired
+    //private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserService userService;
@@ -48,7 +48,7 @@ public class USBStickController {
     // POST: Neuen USB-Stick hinzufügen
     @PostMapping
     public ResponseEntity<USBStick> createUSBStick(@RequestBody USBStick usbStick) {
-        if (repository.existsById(usbStick.getInventarnummer())) {
+        if (repository.existsById(usbStick.getInventoryNumber())) {
             return ResponseEntity.badRequest().body(null);
         }
         USBStick savedStick = repository.save(usbStick);
@@ -60,13 +60,13 @@ public class USBStickController {
     public ResponseEntity<USBStick> updateUSBStick(@PathVariable String inventarnummer, @RequestBody USBStick updatedStick) {
         return repository.findById(inventarnummer)
                 .map(existingStick -> {
-                    existingStick.setTyp(updatedStick.getTyp());
-                    existingStick.setSpeicherkapazitaet(updatedStick.getSpeicherkapazitaet());
-                    existingStick.setHersteller(updatedStick.getHersteller());
-                    existingStick.setModell(updatedStick.getModell());
-                    existingStick.setSeriennummer(updatedStick.getSeriennummer());
-                    existingStick.setVerfuegbarkeit(updatedStick.getVerfuegbarkeit());
-                    existingStick.setZustand(updatedStick.getZustand());
+                    existingStick.setType(updatedStick.getType());
+                    existingStick.setStorageCapacity(updatedStick.getStorageCapacity());
+                    existingStick.setManufacturer(updatedStick.getManufacturer());
+                    existingStick.setModel(updatedStick.getModel());
+                    existingStick.setSerialNumber(updatedStick.getSerialNumber());
+                    existingStick.setAvailability(updatedStick.getAvailability());
+                    existingStick.setCondition(updatedStick.getCondition());
                     repository.save(existingStick);
                     return ResponseEntity.ok(existingStick);
                 })
@@ -84,6 +84,7 @@ public class USBStickController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
@@ -147,6 +148,5 @@ public class USBStickController {
         }
         return Optional.empty();
     }
-
-
+     */
 }

@@ -13,23 +13,28 @@ import org.springframework.security.authentication.AuthenticationManager;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    //@Autowired
+    //private AuthenticationManager authenticationManager;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
                         // Erlaube statische Ressourcen oder /login.html
-                        .requestMatchers("/login.html").permitAll()
-                        .requestMatchers("/api/usb/login").permitAll()
+                        //.requestMatchers("/login.html").permitAll()
+                        //.requestMatchers("/api/usb/login").permitAll()
                         // Rest muss evtl. authentifiziert sein
-                        .anyRequest().authenticated()
+                        //.anyRequest().authenticated()
                 )
                 // Falls du KEIN default FormLogin willst:
+                //.formLogin(form -> form.disable())
+                //.logout(logout -> logout.logoutUrl("/api/usb/logout").permitAll());
+                // Keine Form-Logins mehr anzeigen:
                 .formLogin(form -> form.disable())
-                .logout(logout -> logout.logoutUrl("/api/usb/logout").permitAll());
+                // Logout auch nicht mehr relevant
+                .logout(logout -> logout.disable());
 
         return http.build();
     }

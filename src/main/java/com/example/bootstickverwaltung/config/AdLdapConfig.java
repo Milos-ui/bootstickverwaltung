@@ -11,7 +11,7 @@ import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAu
 
 import java.util.Collections;
 
-@Configuration
+
 @EnableLdapRepositories
 public class AdLdapConfig {
 

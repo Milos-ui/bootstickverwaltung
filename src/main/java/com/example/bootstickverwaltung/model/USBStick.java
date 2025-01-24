@@ -1,92 +1,41 @@
 package com.example.bootstickverwaltung.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Table(name = "usb_stick") // Name der Datenbank-Tabelle
+@Table(name = "usb_stick")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class USBStick {
 
     @Id
-    private String inventarnummer;
+    @Column(name = "inventory_number")
+    private String inventoryNumber;  // Eindeutig
 
-    private String typ;            // Bootstick oder Datenstick
-    private String speicherkapazitaet; // Größe des Speichers
-    private String hersteller;     // Hersteller des USB-Sticks
-    private String modell;         // Modellbezeichnung
-    private String seriennummer;   // Seriennummer für Garantieansprüche
-    private String verfuegbarkeit; // verfügbar, ausgeliehen, reserviert, in Wartung
-    private String zustand;        // neu, gebraucht, defekt
+    @ManyToOne
+    @JoinColumn(name = "group_id")   // FK auf StickGroup
+    private StickGroup group;
 
-    // Standard-Konstruktor (erforderlich für JPA)
-    public USBStick() {
-    }
+    @Column(name = "type")
+    private String type; // z.B. Bootstick/Datenstick
 
-    // Getter und Setter
-    public String getInventarnummer() {
-        return inventarnummer;
-    }
+    @Column(name = "storage_capacity")
+    private String storageCapacity; // z.B. "16GB"
 
-    public void setInventarnummer(String inventarnummer) {
-        this.inventarnummer = inventarnummer;
-    }
+    private String manufacturer; // Hersteller
+    private String model;        // Modell
+    @Column(name = "serial_number")
+    private String serialNumber;
+    private String availability; // Verfügbar, Reserviert, etc.
+    @Column(name = "stick_condition")  // <-- anpassen
+    private String condition;          // Java-Feld darf "condition" heißen (nicht reserviert in Java).
 
-    public String getTyp() {
-        return typ;
-    }
+    @ManyToOne
+    @JoinColumn(name = "reservation_id") // FK auf Reservation
+    private Reservation reservation;
 
-    public void setTyp(String typ) {
-        this.typ = typ;
-    }
-
-    public String getSpeicherkapazitaet() {
-        return speicherkapazitaet;
-    }
-
-    public void setSpeicherkapazitaet(String speicherkapazitaet) {
-        this.speicherkapazitaet = speicherkapazitaet;
-    }
-
-    public String getHersteller() {
-        return hersteller;
-    }
-
-    public void setHersteller(String hersteller) {
-        this.hersteller = hersteller;
-    }
-
-    public String getModell() {
-        return modell;
-    }
-
-    public void setModell(String modell) {
-        this.modell = modell;
-    }
-
-    public String getSeriennummer() {
-        return seriennummer;
-    }
-
-    public void setSeriennummer(String seriennummer) {
-        this.seriennummer = seriennummer;
-    }
-
-    public String getVerfuegbarkeit() {
-        return verfuegbarkeit;
-    }
-
-    public void setVerfuegbarkeit(String verfuegbarkeit) {
-        this.verfuegbarkeit = verfuegbarkeit;
-    }
-
-    public String getZustand() {
-        return zustand;
-    }
-
-    public void setZustand(String zustand) {
-        this.zustand = zustand;
-    }
 }
