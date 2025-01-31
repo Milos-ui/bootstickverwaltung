@@ -1,68 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login & USB-Sticks</title>
-</head>
+<head><meta charset="UTF-8"><title>Login</title></head>
 <body>
-<h2>Login</h2>
 <form id="loginForm">
     <label>Username:</label>
-    <input id="username" required><br><br>
+    <input id="username" required><br>
     <label>Password:</label>
-    <input id="password" type="password" required><br><br>
+    <input id="password" type="password" required><br>
     <button type="submit">Einloggen</button>
 </form>
-
-<hr>
-<div id="usbContainer"></div>
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', async e => {
         e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        try {
-            const resp = await fetch('/api/usb/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
-                credentials: 'include'
-            });
-            const data = await resp.json();
-
-            if (data.status === 'success') {
-                alert('Login erfolgreich: ' + data.username);
-                // USB-Sticks abfragen
-                const usbResp = await fetch('/api/usb', { credentials: 'include' });
-                if (usbResp.ok) {
-                    const usbSticks = await usbResp.json();
-                    console.log('USB-Sticks: ', usbSticks);
-                    renderUSBSticks(usbSticks);
-                } else {
-                    alert('Fehler beim Abrufen der USB-Liste: ' + usbResp.status);
-                }
-            } else {
-                alert('Login fehlgeschlagen: ' + data.message);
-            }
-        } catch (err) {
-            alert('Netzwerkfehler: ' + err);
-        }
-    });
-
-    function renderUSBSticks(usbSticks) {
-        const container = document.getElementById('usbContainer');
-        container.innerHTML = '<h3>USB-Sticks</h3>';
-        usbSticks.forEach(stick => {
-            container.innerHTML += `
-          <div>
-            <strong>${stick.inventarnummer}</strong>:
-            <em>${stick.typ}</em> (${stick.speicherkapazitaet}) - Zustand: ${stick.zustand}
-          </div>
-        `;
+        const username = username.value;
+        const password = password.value;
+        const resp = await fetch('/api/usb/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password}),
+            credentials: 'include'
         });
-    }
+        const data = await resp.json();
+        alert(JSON.stringify(data));
+    });
 </script>
 </body>
 </html>

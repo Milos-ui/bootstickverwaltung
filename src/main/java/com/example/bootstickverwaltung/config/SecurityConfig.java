@@ -9,34 +9,27 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 
-@EnableWebSecurity  // <-- NEU: aktiviert Web Security explizit
+import static org.springframework.security.config.Customizer.withDefaults;
+
+@EnableWebSecurity
 @Configuration
 public class SecurityConfig {
-
-    //@Autowired
-    //private AuthenticationManager authenticationManager;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // ggf. nur zu Testzwecken
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                        // Erlaube statische Ressourcen oder /login.html
-                        //.requestMatchers("/login.html").permitAll()
-                        //.requestMatchers("/api/usb/login").permitAll()
-                        // Rest muss evtl. authentifiziert sein
-                        //.anyRequest().authenticated()
+                        // Swagger-UI, API-Docs etc. erlauben:
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        // Deine API-Endpunkte ggf. frei oder per Auth
+                        .requestMatchers("/api/usb/**").permitAll()
+                        // ... oder wenn du restliche Endpunkte absichern willst:
+                        .anyRequest().authenticated()
                 )
-                // Falls du KEIN default FormLogin willst:
-                //.formLogin(form -> form.disable())
-                //.logout(logout -> logout.logoutUrl("/api/usb/logout").permitAll());
-                // Keine Form-Logins mehr anzeigen:
-                .formLogin(form -> form.disable())
-                // Logout auch nicht mehr relevant
-                .logout(logout -> logout.disable());
+                .formLogin(withDefaults()) // oder .formLogin(form -> form.disable())
+                .logout(withDefaults());
 
         return http.build();
     }
-
 }

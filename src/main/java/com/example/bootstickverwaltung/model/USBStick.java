@@ -1,41 +1,57 @@
 package com.example.bootstickverwaltung.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Table(name = "usb_stick")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@Table(name = "usb_stick") // Name der Datenbank-Tabelle
 public class USBStick {
 
+    @Setter
+    @Getter
     @Id
-    @Column(name = "inventory_number")
-    private String inventoryNumber;  // Eindeutig
+    private String inventarnummer;      // Eindeutige Inventarnummer
 
+    @Setter
+    @Getter
+    private String typ;                 // Bootstick oder Datenstick
+
+    @Setter
+    @Getter
+    private String speicherkapazitaet;  // Größe des Speichers (z.B. "16GB")
+
+    @Setter
+    @Getter
+    private String hersteller;          // Hersteller
+
+    @Setter
+    @Getter
+    private String modell;              // Modellbezeichnung
+
+    @Setter
+    @Getter
+    private String seriennummer;        // Seriennummer
+
+    @Setter
+    @Getter
+    private String verfuegbarkeit;      // z.B. verfügbar, ausgeliehen, reserviert, in Wartung
+
+    @Setter
+    @Getter
+    private String zustand;             // neu, gebraucht, defekt
+
+    @Setter
+    @Getter
     @ManyToOne
-    @JoinColumn(name = "group_id")   // FK auf StickGroup
+    @JoinColumn(name = "group_id")      // Verweis auf StickGroup (FK-Spalte in DB)
+    @JsonBackReference
     private StickGroup group;
 
-    @Column(name = "type")
-    private String type; // z.B. Bootstick/Datenstick
-
-    @Column(name = "storage_capacity")
-    private String storageCapacity; // z.B. "16GB"
-
-    private String manufacturer; // Hersteller
-    private String model;        // Modell
-    @Column(name = "serial_number")
-    private String serialNumber;
-    private String availability; // Verfügbar, Reserviert, etc.
-    @Column(name = "stick_condition")  // <-- anpassen
-    private String condition;          // Java-Feld darf "condition" heißen (nicht reserviert in Java).
-
-    @ManyToOne
-    @JoinColumn(name = "reservation_id") // FK auf Reservation
-    private Reservation reservation;
+    // Standard-Konstruktor (erforderlich für JPA)
+    public USBStick() {
+    }
 
 }
