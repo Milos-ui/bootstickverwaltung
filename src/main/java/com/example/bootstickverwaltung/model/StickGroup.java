@@ -30,4 +30,13 @@ public class StickGroup {
     public void recalcStickCount() {
         this.numberOfSticks = (this.sticks == null) ? 0 : this.sticks.size();
     }
+    public void addStick(USBStick stick) {
+        if (this.sticks == null) {
+            this.sticks = new ArrayList<>();
+        }
+        this.sticks.add(stick);
+        stick.setGroup(this);  // Setzt auch die Rückreferenz
+        recalcStickCount();
+    }
+
 }

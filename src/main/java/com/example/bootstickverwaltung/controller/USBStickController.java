@@ -118,7 +118,7 @@ public class USBStickController {
             // Im Zweifel nochmal aus der DB laden (falls das Objekt 'half-attached' ist)
             StickGroup freshGroup = groupRepository.findById(grp.getGroupId()).orElse(null);
             if (freshGroup != null) {
-                // 3) optional: freshGroup.getSticks().add(savedStick);
+                freshGroup.getSticks().add(savedStick);
                 //    (cascade = ALL übernimmt das i.d.R., aber wenn du sicher gehen willst, kannst du's manuell hinzufügen)
                 freshGroup.recalcStickCount();
                 groupRepository.save(freshGroup);
