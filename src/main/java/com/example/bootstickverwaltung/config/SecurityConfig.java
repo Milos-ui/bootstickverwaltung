@@ -18,18 +18,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // ggf. nur zu Testzwecken
+                .csrf(csrf -> csrf.disable()) // Nur zu Testzwecken
                 .authorizeHttpRequests(auth -> auth
-                        // Swagger-UI, API-Docs etc. erlauben:
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        // Deine API-Endpunkte ggf. frei oder per Auth
                         .requestMatchers("/api/usb/**").permitAll()
-                        // ... oder wenn du restliche Endpunkte absichern willst:
                         .anyRequest().authenticated()
                 )
-                .formLogin(withDefaults()) // oder .formLogin(form -> form.disable())
+                .formLogin(form -> form.disable()) // Form-Login komplett deaktivieren
                 .logout(withDefaults());
-
         return http.build();
     }
+
 }

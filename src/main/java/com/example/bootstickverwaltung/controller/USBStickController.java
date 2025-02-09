@@ -52,28 +52,14 @@ public class USBStickController {
         }
     }
 
-    // PUT /api/groups/{groupId}
     @PutMapping("/groups/{groupId}")
     public ResponseEntity<StickGroup> updateGroup(@PathVariable String groupId,
                                                   @RequestBody StickGroup updated) {
         return groupRepository.findById(groupId)
                 .map(existing -> {
                     existing.setStickType(updated.getStickType());
-                    existing.setNumberOfSticks(updated.getNumberOfSticks());
-                    // Optional: vorhandene Sticks anpassen, etc.
                     StickGroup saved = groupRepository.save(existing);
                     return ResponseEntity.ok(saved);
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    // DELETE /api/groups/{groupId}
-    @DeleteMapping("/groups/{groupId}")
-    public ResponseEntity<?> deleteGroup(@PathVariable String groupId) {
-        return groupRepository.findById(groupId)
-                .map(g -> {
-                    groupRepository.delete(g);
-                    return ResponseEntity.noContent().build();
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -89,6 +75,18 @@ public class USBStickController {
         return ResponseEntity.ok(saved);
     }
 
+    // DELETE /api/groups/{groupId}
+    @DeleteMapping("/groups/{groupId}")
+    public ResponseEntity<?> deleteGroup(@PathVariable String groupId) {
+        return groupRepository.findById(groupId)
+                .map(g -> {
+                    groupRepository.delete(g);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
     // GET: Alle USB-Sticks abrufen
     @GetMapping
     public List<USBStick> getAll() {
@@ -103,38 +101,35 @@ public class USBStickController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // POST: Neuen USB-Stick hinzufügen
     @PostMapping
     public ResponseEntity<USBStick> addUSBStick(@RequestBody USBStick newStick) {
-        if (repository.existsById(newStick.getInventarnummer())) {
+        if (newStick.getInventarnummer() != null && repository.existsById(newStick.getInventarnummer())) {
             return ResponseEntity.badRequest().build();
         }
-        // 1) Stick speichern
         USBStick savedStick = repository.save(newStick);
 
-        // 2) Zugehörige Gruppe updaten
         StickGroup grp = savedStick.getGroup();
         if (grp != null) {
-            // Im Zweifel nochmal aus der DB laden (falls das Objekt 'half-attached' ist)
             StickGroup freshGroup = groupRepository.findById(grp.getGroupId()).orElse(null);
             if (freshGroup != null) {
                 freshGroup.getSticks().add(savedStick);
-                //    (cascade = ALL übernimmt das i.d.R., aber wenn du sicher gehen willst, kannst du's manuell hinzufügen)
                 freshGroup.recalcStickCount();
                 groupRepository.save(freshGroup);
             }
         }
-
         return ResponseEntity.ok(savedStick);
     }
 
 
-
-    // PUT: Einen bestehenden USB-Stick aktualisieren
     @PutMapping("/{inventarnummer}")
     public ResponseEntity<USBStick> updateUSBStick(@PathVariable String inventarnummer, @RequestBody USBStick updatedStick) {
         return repository.findById(inventarnummer)
                 .map(existingStick -> {
+                    StickGroup oldGroup = existingStick.getGroup();
+                    StickGroup newGroup = null;
+                    if (updatedStick.getGroup() != null && updatedStick.getGroup().getGroupId() != null) {
+                        newGroup = groupRepository.findById(updatedStick.getGroup().getGroupId()).orElse(null);
+                    }
                     existingStick.setTyp(updatedStick.getTyp());
                     existingStick.setSpeicherkapazitaet(updatedStick.getSpeicherkapazitaet());
                     existingStick.setHersteller(updatedStick.getHersteller());
@@ -142,11 +137,29 @@ public class USBStickController {
                     existingStick.setSeriennummer(updatedStick.getSeriennummer());
                     existingStick.setVerfuegbarkeit(updatedStick.getVerfuegbarkeit());
                     existingStick.setZustand(updatedStick.getZustand());
+
+                    if (newGroup != null && (oldGroup == null || !oldGroup.getGroupId().equals(newGroup.getGroupId()))) {
+                        if (oldGroup != null) {
+                            oldGroup.getSticks().remove(existingStick);
+                            oldGroup.recalcStickCount();
+                            groupRepository.save(oldGroup);
+                        }
+                        newGroup.getSticks().add(existingStick);
+                        newGroup.recalcStickCount();
+                        existingStick.setGroup(newGroup);
+                        groupRepository.save(newGroup);
+                    } else if (newGroup == null && oldGroup != null) {
+                        oldGroup.getSticks().remove(existingStick);
+                        oldGroup.recalcStickCount();
+                        groupRepository.save(oldGroup);
+                        existingStick.setGroup(null);
+                    }
                     repository.save(existingStick);
                     return ResponseEntity.ok(existingStick);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     // DELETE: Einen USB-Stick löschen
     @DeleteMapping("/{inventarnummer}")

@@ -1,57 +1,47 @@
 package com.example.bootstickverwaltung.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usb_stick") // Name der Datenbank-Tabelle
+@Table(name = "usb_stick")
 public class USBStick {
 
-    @Setter
-    @Getter
     @Id
-    private String inventarnummer;      // Eindeutige Inventarnummer
+    @Column(name = "inventarnummer", nullable = false, unique = true)
+    @Getter @Setter
+    private String inventarnummer;
 
-    @Setter
-    @Getter
-    private String typ;                 // Bootstick oder Datenstick
+    @Getter @Setter
+    private String typ;
 
-    @Setter
-    @Getter
-    private String speicherkapazitaet;  // Größe des Speichers (z.B. "16GB")
+    @Getter @Setter
+    private String speicherkapazitaet;
 
-    @Setter
-    @Getter
-    private String hersteller;          // Hersteller
+    @Getter @Setter
+    private String hersteller;
 
-    @Setter
-    @Getter
-    private String modell;              // Modellbezeichnung
+    @Getter @Setter
+    private String modell;
 
-    @Setter
-    @Getter
-    private String seriennummer;        // Seriennummer
+    @Getter @Setter
+    private String seriennummer;
 
-    @Setter
-    @Getter
-    private String verfuegbarkeit;      // z.B. verfügbar, ausgeliehen, reserviert, in Wartung
+    @Getter @Setter
+    private String verfuegbarkeit;
 
-    @Setter
-    @Getter
-    private String zustand;             // neu, gebraucht, defekt
+    @Getter @Setter
+    private String zustand;
 
-    @Setter
-    @Getter
+    @Getter @Setter
     @ManyToOne
-    @JoinColumn(name = "group_id")      // Verweis auf StickGroup (FK-Spalte in DB)
+    @JoinColumn(name = "group_id")
     @JsonBackReference
     private StickGroup group;
 
-    // Standard-Konstruktor (erforderlich für JPA)
+    // Standard-Konstruktor
     public USBStick() {
     }
-
 }
