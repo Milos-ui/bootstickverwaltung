@@ -7,10 +7,11 @@ import org.springframework.data.ldap.repository.config.EnableLdapRepositories;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
+
 import java.util.Collections;
 
 @Configuration
-@EnableLdapRepositories(basePackages = "com.example.bootstickverwaltung.ldap.repository")
+@EnableLdapRepositories
 public class AdLdapConfig {
 
     @Value("${spring.ldap.urls}")
@@ -23,14 +24,21 @@ public class AdLdapConfig {
     public ActiveDirectoryLdapAuthenticationProvider authenticationProvider() {
         ActiveDirectoryLdapAuthenticationProvider provider =
                 new ActiveDirectoryLdapAuthenticationProvider(domain, url);
+
         provider.setConvertSubErrorCodesToExceptions(true);
         provider.setUseAuthenticationRequestCredentials(true);
+        // Falls du @student.tgm.ac.at verwendest:
         provider.setSearchFilter("(sAMAccountName={0})");
+
+
+
+
         return provider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(ActiveDirectoryLdapAuthenticationProvider adProvider) {
+    public AuthenticationManager authenticationManager(
+            ActiveDirectoryLdapAuthenticationProvider adProvider) {
         return new ProviderManager(Collections.singletonList(adProvider));
     }
 }

@@ -1,39 +1,20 @@
 package com.example.bootstickverwaltung.model;
 
-import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usb_stick")
+@Table(name = "usb_stick") // Name der Datenbank-Tabelle
+@Getter @Setter
+@NoArgsConstructor
 public class USBStick {
 
     @Id
-    @Column(name = "inventarnummer", nullable = false, unique = true)
-    @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String inventarnummer;
-
-    @Getter @Setter
-    private String typ;
-
-    @Getter @Setter
-    private String speicherkapazitaet;
-
-    @Getter @Setter
-    private String hersteller;
-
-    @Getter @Setter
-    private String modell;
-
-    @Getter @Setter
-    private String seriennummer;
-
-    @Getter @Setter
-    private String verfuegbarkeit;
-
-    @Getter @Setter
-    private String zustand;
 
     @Getter @Setter
     @ManyToOne
@@ -41,7 +22,12 @@ public class USBStick {
     @JsonBackReference
     private StickGroup group;
 
-    // Standard-Konstruktor
-    public USBStick() {
-    }
+    private String typ;            // Bootstick oder Datenstick
+    private String speicherkapazitaet; // Größe des Speichers
+    private String hersteller;     // Hersteller des USB-Sticks
+    private String modell;         // Modellbezeichnung
+    private String seriennummer;   // Seriennummer für Garantieansprüche
+    private String verfuegbarkeit; // verfügbar, ausgeliehen, reserviert, in Wartung
+    private String zustand;        // neu, gebraucht, defekt
+
 }

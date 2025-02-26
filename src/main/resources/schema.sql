@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS usb_stick;
 DROP TABLE IF EXISTS stick_group;
 
@@ -9,7 +11,7 @@ CREATE TABLE stick_group (
 
 CREATE TABLE usb_stick (
                            inventarnummer VARCHAR(255) PRIMARY KEY,
-                           typ VARCHAR(50),
+                           typ VARCHAR(50) NOT NULL,
                            speicherkapazitaet VARCHAR(50),
                            hersteller VARCHAR(100),
                            modell VARCHAR(100),
@@ -23,3 +25,5 @@ CREATE TABLE usb_stick (
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE
 );
+
+SET FOREIGN_KEY_CHECKS = 1;
