@@ -13,7 +13,6 @@ import lombok.Setter;
 public class USBStick {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String inventarnummer;
 
     @Getter @Setter
